@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import html2canvas from "html2canvas"; // Import html2canvas
 import jsPDF from "jspdf"; // Import jsPDF for PDF generation
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
 
 const InvoiceDetails = () => {
   const location = useLocation();
@@ -11,10 +11,10 @@ const InvoiceDetails = () => {
   const [user, setUser] = useState();
   const [isEditing, setIsEditing] = useState(false); // Track if we are in edit mode
   const [editableProducts, setEditableProducts] = useState(data.products);
-  const [paymentStatus,setPaymentStatus]=useState();
+  const [paymentStatus, setPaymentStatus] = useState();
   const logo = localStorage.getItem("image");
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
     const day = String(date.getDate()).padStart(2, "0");
@@ -31,9 +31,12 @@ const InvoiceDetails = () => {
         const response = await axios.post("http://localhost:4000/api/user", {
           email,
         });
-        const invoiceId=data.invoiceId;
-        const payment = await axios.post("http://localhost:4000/api/getPaymentData", {invoiceId});
-        setPaymentStatus(payment.data) // 'Successful'
+        const invoiceId = data.invoiceId;
+        const payment = await axios.post(
+          "http://localhost:4000/api/getPaymentData",
+          { invoiceId }
+        );
+        setPaymentStatus(payment.data); // 'Successful'
         // console.log(payment.data)
         setUser(response.data.user);
       } catch (error) {
@@ -48,17 +51,17 @@ const InvoiceDetails = () => {
   const generatePDF = (customerName) => {
     const buttons = document.querySelectorAll("button");
     buttons.forEach((button) => (button.style.display = "none"));
-  
+
     const input = document.querySelector(".invoice-container");
     input.classList.add("no-border");
-  
+
     // Save original styles
     const originalStyle = input.style.cssText;
-  
+
     // Temporarily adjust styles for proper rendering
     input.style.width = "80%";
     input.style.height = "auto";
-  
+
     // Use html2canvas to capture the full content
     html2canvas(input, {
       useCORS: true, // Allow cross-origin resource sharing
@@ -74,44 +77,39 @@ const InvoiceDetails = () => {
           unit: "pt",
           format: "a4", // A4 size (595.28 x 841.89 pts)
         });
-  
+
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
-  
+
         const scaleFactor = pdfWidth / canvasWidth; // Scale content to fit PDF width
         const scaledCanvasHeight = canvasHeight * scaleFactor;
-  
+
         if (scaledCanvasHeight > pdfHeight) {
           // Handle multi-page PDFs
           let position = 0;
-  
+
           while (position < canvasHeight) {
-            const canvasSection = canvas.getContext("2d").getImageData(
-              0,
-              position,
-              canvas.width,
-              Math.min(canvas.height - position, pdfHeight / scaleFactor)
-            );
-  
+            const canvasSection = canvas
+              .getContext("2d")
+              .getImageData(
+                0,
+                position,
+                canvas.width,
+                Math.min(canvas.height - position, pdfHeight / scaleFactor)
+              );
+
             const sectionCanvas = document.createElement("canvas");
             sectionCanvas.width = canvas.width;
             sectionCanvas.height = canvasSection.height;
-  
+
             const sectionCtx = sectionCanvas.getContext("2d");
             sectionCtx.putImageData(canvasSection, 0, 0);
-  
+
             const sectionImageData = sectionCanvas.toDataURL("image/png", 1.0);
-            pdf.addImage(
-              sectionImageData,
-              "PNG",
-              0,
-              0,
-              pdfWidth,
-              pdfHeight
-            );
-  
+            pdf.addImage(sectionImageData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
             position += pdfHeight / scaleFactor;
             if (position < canvasHeight) pdf.addPage();
           }
@@ -119,7 +117,7 @@ const InvoiceDetails = () => {
           // Single-page content
           pdf.addImage(imageData, "PNG", 0, 0, pdfWidth, scaledCanvasHeight);
         }
-  
+
         pdf.save(`${customerName}_invoice.pdf`);
       })
       .catch((error) => {
@@ -132,52 +130,51 @@ const InvoiceDetails = () => {
         buttons.forEach((button) => (button.style.display = "inline-block"));
       });
   };
-  
-
 
   // Function to handle product changes
-const handleProductChange = (index, field, value) => {
-  const updatedProducts = [...editableProducts];
-  updatedProducts[index][field] = value;
-  setEditableProducts(updatedProducts);
-};
+  const handleProductChange = (index, field, value) => {
+    const updatedProducts = [...editableProducts];
+    updatedProducts[index][field] = value;
+    setEditableProducts(updatedProducts);
+  };
 
-// Function to toggle edit mode and handle data collection
-const toggleEditMode = (editMode) => {
-  if (!editMode) {
-    // Collect all the updated data
-    const updatedInvoiceData = {
-      id: data._id,
-      to: data.to,
-      address: data.address,
-      phone: data.phone,
-      date: data.date,
-      products: editableProducts,
-      total: editableProducts.reduce(
-        (sum, item) => sum + parseFloat(item.price) * parseFloat(item.quantity),
-        0
-      ),
-    };
+  // Function to toggle edit mode and handle data collection
+  const toggleEditMode = (editMode) => {
+    if (!editMode) {
+      // Collect all the updated data
+      const updatedInvoiceData = {
+        id: data._id,
+        to: data.to,
+        address: data.address,
+        phone: data.phone,
+        date: data.date,
+        products: editableProducts,
+        total: editableProducts.reduce(
+          (sum, item) =>
+            sum + parseFloat(item.price) * parseFloat(item.quantity),
+          0
+        ),
+      };
 
-    // Log the updated object to the console
-    // console.log("Updated Invoice Data:", updatedInvoiceData);
-    axios.put('http://localhost:4000/api/updateInvoice',updatedInvoiceData)
-    .then((res)=>{
-      toast.success(res.data.message,{position:"top-center"});
-      // console.log(res.data.invoice)
-      setData(res.data.invoice)
-    })
-    .catch((error)=>{
-      toast.error(res.data.message,{position:"top-center"})
-    })
-  }
-  setIsEditing(editMode);
-};
+      // Log the updated object to the console
+      // console.log("Updated Invoice Data:", updatedInvoiceData);
+      axios
+        .put("http://localhost:4000/api/updateInvoice", updatedInvoiceData)
+        .then((res) => {
+          toast.success(res.data.message, { position: "top-center" });
+          // console.log(res.data.invoice)
+          setData(res.data.invoice);
+        })
+        .catch((error) => {
+          toast.error(res.data.message, { position: "top-center" });
+        });
+    }
+    setIsEditing(editMode);
+  };
 
-
-const handlePayNow = () => {
-  navigate("/payments", { state:data})
-};
+  const handlePayNow = () => {
+    navigate("/payments", { state: data });
+  };
 
   return (
     <div className="invoice-container" id="invoice-content">
@@ -187,7 +184,18 @@ const handlePayNow = () => {
         {user && (
           <div className="user-detail-container">
             <span className="userName">{user.name}</span> <br />
-            <span className="address">{user.address}</span> <br />
+            <span className="address">
+              {user.address.localArea +
+                " " +
+                user.address.city +
+                " " +
+                user.address.state +
+                " " +
+                user.address.country +
+                " " +
+                user.address.pin}
+            </span>{" "}
+            <br />
             <span className="contact">
               {user.email} || +91 {user.phone}
             </span>{" "}
@@ -264,7 +272,7 @@ const handlePayNow = () => {
             const quantity = parseFloat(item.quantity);
             const total = price * quantity;
             return (
-              <tr key={item.id}>
+              <tr key={index}>
                 <td>{srNo}</td>
                 <td className="nameCap">
                   {isEditing ? (
@@ -310,12 +318,14 @@ const handlePayNow = () => {
             );
           })}
         </tbody>
-        <tr>
-          <td colSpan={4} style={{ textAlign: "center" }}>
-            Total
-          </td>
-          <td>{data.total}</td>
-        </tr>
+        <tfoot>
+          <tr>
+            <td colSpan={4} style={{ textAlign: "center" }}>
+              Total
+            </td>
+            <td>{data.total}</td>
+          </tr>
+        </tfoot>
       </table>
 
       {/* Footer */}
@@ -343,16 +353,15 @@ const handlePayNow = () => {
           {isEditing ? "Save Changes" : "Edit Invoice"}
         </button>
         {paymentStatus !== null && (
-
-        <button onClick={() => generatePDF(data.to)}>Download PDF</button>
-      )}
+          <button onClick={() => generatePDF(data.to)}>Download PDF</button>
+        )}
 
         {/* <button>Share via Email</button>
         <button>Share via WhatsApp</button> */}
 
         {paymentStatus === null && (
-        <button onClick={handlePayNow}>Pay Now</button>
-      )}
+          <button onClick={handlePayNow}>Pay Now</button>
+        )}
       </div>
     </div>
   );

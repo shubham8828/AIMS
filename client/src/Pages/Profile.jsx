@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ImageCompressor from 'image-compressor.js'; // For image compression
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
 import { ImSpinner3 } from "react-icons/im";
 
 const Profile = () => {
@@ -10,13 +10,12 @@ const Profile = () => {
   const [formData, setFormData] = useState({}); // Store form data
   const navigate = useNavigate();
   const imageRef = useRef(); 
-  const[loading,setLoading]=useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const email = localStorage.getItem('email');
     if (!email) {
-      navigate('/login'); // Redirect to login if not profileenticated
+      navigate('/login'); // Redirect to login if not authenticated
       return;
     }
 
@@ -52,22 +51,30 @@ const Profile = () => {
         },
       });
     } else {
-      setFormData({ ...formData, [name]: value });
+      const keys = name.split('.'); // Handle nested keys
+      if (keys.length > 1) {
+        setFormData({
+          ...formData,
+          [keys[0]]: { ...formData[keys[0]], [keys[1]]: value },
+        });
+      } else {
+        setFormData({ ...formData, [name]: value });
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await axios.put('http://localhost:4000/api/update', formData);
-      localStorage.setItem('email',res.data.user.email)
-      localStorage.setItem('image',res.data.user.image)
-      setLoading(false)
-      toast.success('Profile updated successfully',{position:'top-center'})
+      localStorage.setItem('email', res.data.user.email);
+      localStorage.setItem('image', res.data.user.image);
+      setLoading(false);
+      toast.success('Profile updated successfully', { position: 'top-center' });
     } catch (error) {
-      setLoading(false)
-      toast.error('Failed to update profile',{position:'top-center'})
+      setLoading(false);
+      toast.error('Failed to update profile', { position: 'top-center' });
     }
   };
 
@@ -81,10 +88,10 @@ const Profile = () => {
 
   return (
     <div className='profile-container'>
-      <h2 style={{textAlign:'center',marginBottom:'20px'}}>Company Profile Setting</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Company Profile Setting</h2>
       <form className="profile-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="image" className="image-label" style={{textAlign:'center',marginBottom:'20px'}}>Company Logo</label>
+          <label htmlFor="image" className="image-label" style={{ textAlign: 'center', marginBottom: '20px' }}>Company Logo</label>
           <div onClick={triggerImageUpload} className="profile-image">
             <img src={formData.image} alt="Profile" className="profile-pic" />
           </div>
@@ -125,7 +132,7 @@ const Profile = () => {
           />
         </div>
 
-      <div className="form-group">
+        <div className="form-group">
           <label htmlFor="phone">Company Phone</label>
           <input
             type="tel"
@@ -134,32 +141,83 @@ const Profile = () => {
             value={formData.phone || ''}
             onChange={(e) => {
               const input = e.target.value;
-              if (/^\d{0,10}$/.test(input)) {  // Allow only digits and max 10 characters
-                handleChange(e);  // Only update formData if validation passes
+              if (/^\d{0,10}$/.test(input)) {
+                handleChange(e);
               }
             }}
-            maxLength="10"  // Restrict to 10 characters max
+            maxLength="10"
             required
             placeholder="Enter 10-digit phone number"
           />
         </div>
 
-
-
         <div className="form-group">
-          <label htmlFor="address">Company Address</label>
+          <label htmlFor="address.localArea">Local Area</label>
           <input
             type="text"
-            name="address"
-            id="address"
-            value={formData.address || ''}
+            name="address.localArea"
+            id="address.localArea"
+            value={formData.address?.localArea || ''}
             onChange={handleChange}
             required
-            minLength={6}
-            maxLength={50}
           />
         </div>
-        <button type="submit" className="submit-btn">{loading && <ImSpinner3/> }Update Comapany Profile</button>
+
+        <div className="form-group">
+          <label htmlFor="address.city">City</label>
+          <input
+            type="text"
+            name="address.city"
+            id="address.city"
+            value={formData.address?.city || ''}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="address.state">State</label>
+          <input
+            type="text"
+            name="address.state"
+            id="address.state"
+            value={formData.address?.state || ''}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="address.country">Country</label>
+          <input
+            type="text"
+            name="address.country"
+            id="address.country"
+            value={formData.address?.country || ''}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="address.pin">PIN Code</label>
+          <input
+            type="text"
+            name="address.pin"
+            id="address.pin"
+            value={formData.address?.pin || ''}
+            onChange={(e) => {
+              const input = e.target.value;
+              if (/^\d{0,6}$/.test(input)) {
+                handleChange(e);
+              }
+            }}
+            maxLength="6"
+            required
+          />
+        </div>
+
+        <button type="submit" className="submit-btn">{loading && <ImSpinner3 />} Update Company Profile</button>
       </form>
     </div>
   );

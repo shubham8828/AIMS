@@ -38,7 +38,7 @@ const Navbar = ({ children, setToken }) => {
     const filteredMenu = token
     ? menuItem.filter(item => !["/", "/login", "/about", "/contact"].includes(item.path)) // Exclude "Home", "About", and "Contact" if token is present
     : menuItem.filter(item =>
-        !["/dashboard", "/invoices", "/new-invoice", "/profile", "/support"].includes(item.path) // Hide restricted items if no token
+        !["/dashboard", "/invoices", "/new-invoice", "/profile", "/support","/payment-details"].includes(item.path) // Hide restricted items if no token
     );
 
     const logOut = () => {

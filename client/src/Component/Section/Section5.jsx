@@ -31,24 +31,7 @@ const Section5 = () => {
                             <p>Using our instant invoicing app, you can have full inventory control managed by a single employee. AIMPS inventory management software allows you to enter large amounts of inventory supply data directly by importing an excel sheet using bulk import options.</p>
                         </div>
                     </div>
-                    <div className="button-container">
-                        <a
-                            href="https://play.google.com/store/apps/details?id=in.AIMPS.app"
-                            className="button hidden-mobile"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Manage Inventory for FREE
-                        </a>
-                        <a
-                            href="https://app.getAIMPS.in/auth/login"
-                            className="button hidden-desktop"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Manage Inventory for FREE
-                        </a>
-                    </div>
+
                 </div>
                 
             </div>

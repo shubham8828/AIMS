@@ -98,18 +98,18 @@ const Home = () => {
 
   // Static chart data with default values
   const chartData = [
-    { month: "January", invoiceCount: 20, totalPrice: 5000 },
-    { month: "February", invoiceCount: 10, totalPrice: 7000 },
-    { month: "March", invoiceCount: 5, totalPrice: 1000 },
-    { month: "April", invoiceCount: 50, totalPrice: 70000 },
-    { month: "May", invoiceCount: 2, totalPrice: 20000 },
-    { month: "June", invoiceCount: 10, totalPrice: 50000 },
-    { month: "July", invoiceCount: 50, totalPrice: 60000 },
-    { month: "August", invoiceCount: 9, totalPrice: 4000 },
-    { month: "September", invoiceCount: 10, totalPrice: 80000 },
-    { month: "October", invoiceCount: 20, totalPrice: 700 },
-    { month: "November", invoiceCount: 10, totalPrice: 9000 },
-    { month: "December", invoiceCount: 40, totalPrice: 1000 },
+    { month: "January", invoiceCount: 0, totalPrice: 0 },
+    { month: "February", invoiceCount: 0, totalPrice: 0 },
+    { month: "March", invoiceCount: 0, totalPrice: 0 },
+    { month: "April", invoiceCount: 0, totalPrice: 0 },
+    { month: "May", invoiceCount: 0, totalPrice: 0 },
+    { month: "June", invoiceCount: 0, totalPrice: 0 },
+    { month: "July", invoiceCount: 0, totalPrice: 0 },
+    { month: "August", invoiceCount: 0, totalPrice: 0 },
+    { month: "September", invoiceCount: 0, totalPrice: 0 },
+    { month: "October", invoiceCount: 0, totalPrice:0 },
+    { month: "November", invoiceCount: 0, totalPrice: 0 },
+    { month: "December", invoiceCount: 0, totalPrice: 0 },
   ];
 
   // Merge dynamic data into static chartData

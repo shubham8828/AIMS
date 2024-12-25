@@ -23,24 +23,7 @@ const Section4 = () => {
                             <p>AIMPS software ensures all bills are accounted for before filing taxes, saving time with data backup options.</p>
                         </div>
                     </div>
-                    <div className="button-container">
-                        <a
-                            href="https://play.google.com/store/apps/details?id=in.AIMPS.app"
-                            className="button hidden-mobile"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Get GST Reports in One-Click
-                        </a>
-                        <a
-                            href="https://app.getAIMPS.in/auth/login"
-                            className="button hidden-desktop"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Get GST Reports in One-Click
-                        </a>
-                    </div>
+                   
                 </div>
                 <div className="image-container">
                     <img

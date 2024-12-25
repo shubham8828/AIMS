@@ -45,9 +45,11 @@ const Invoices = () => {
 
   // Handle invoice deletion
   const deleteInvoice = async (id) => {
+    console.log(id);
     setLoading(true);
-
+  
     try {
+      // Sending `id` as a URL parameter
       await axios
         .delete(`http://localhost:4000/api/delete/${id}`)
         .then((res) => {
@@ -63,6 +65,7 @@ const Invoices = () => {
       toast.error("Internal Server Error", { position: "top-center" });
     }
   };
+  
 
   // Filter invoices by name based on the search term
   useEffect(() => {

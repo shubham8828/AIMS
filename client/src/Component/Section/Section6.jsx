@@ -23,17 +23,7 @@ const Section6 = () => {
                             <p>With the use of the AIMPS GST software, it is quite easier to track sales, purchases, quotations, and expenses. You can add multiple users, businesses, price lists for wholesale price, retail price, distributor price, etc. Recording the expenses in the business is most important to maintain the accounts and even for tax filing. It is easier to record expenses in AIMPS GST billing and invoicing software.</p>
                         </div>
                     </div>
-                    <div className="button-container">
-                       
-                        <a
-                            href="https://app.getAIMPS.in/auth/login"
-                            className="button hidden-desktop"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Try AIMPS for Free
-                        </a>
-                    </div>
+                   
                 </div>
                 <div className="image-container">
                     <img

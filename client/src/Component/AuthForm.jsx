@@ -12,10 +12,16 @@ const AuthForm = ({ setToken }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    address: "",
+    phone: "",
     password: "",
-    phone: "", // Added phone to formData
     image: defaultProfile, // Default profile image
+    address: {
+      localArea: "",
+      city: "",
+      state: "",
+      country: "",
+      pin: "",
+    }, // Address fields split into parts
   });
   const navigate = useNavigate();
   const imageRef = useRef(); // useRef for image input
@@ -38,6 +44,13 @@ const AuthForm = ({ setToken }) => {
           console.log(e.message);
         },
       });
+    } else if (name.startsWith("address.")) {
+      // Update address fields
+      const addressField = name.split(".")[1];
+      setFormData({
+        ...formData,
+        address: { ...formData.address, [addressField]: value },
+      });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -49,87 +62,37 @@ const AuthForm = ({ setToken }) => {
     setLoading(true);
 
     try {
-      if (isLogin) {
-        setLoading(true)
-        // Submit login form data (password hashed on the frontend)
-        const { email, password } = formData;
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : formData; // Send entire formData for registration
 
-        await axios
-          .post("http://localhost:4000/api/login", { email, password })
-          .then((res) => {
-            localStorage.setItem("email", res.data.user.email);
-            localStorage.setItem("token", res.data.token);
-            setToken(res.data.token);
-            localStorage.setItem("image", res.data.user.image);
-            setLoading(false)
-            toast.success(res.data.msg, { position: "top-center" });
-            console.log(res.data.user);
-            setFormData({
-              name: "",
-              email: "",
-              address: "",
-              password: "",
-              phone: "",
-              image: defaultProfile,
-            });
-            setLoading(false);
-            navigate("/");
-          })
-          .catch((error) => {
-            setLoading(false)
-            console.log(error);
-            setFormData({
-              name: "",
-              email: "",
-              address: "",
-              password: "",
-              phone: "",
-              image: defaultProfile,
-            });
-            toast.error(error.response.data.msg, { position: "top-center" });
-            setLoading(false);
-          });
-      } else {
-        setLoading(true)
-        
+      const url = isLogin
+        ? "http://localhost:4000/api/login"
+        : "http://localhost:4000/api/register";
 
-        // Send data to the server
-        await axios
-          .post("http://localhost:4000/api/register", formData)
-          .then((res) => {
-            localStorage.setItem("email", res.data.user.email);
-            localStorage.setItem("token", res.data.token);
-            setToken(res.data.token);
-            localStorage.setItem("image", res.data.user.image);
-            setLoading(false)
-            toast.success(res.data.msg, { position: "top-center" });
-            setFormData({
-              name: "",
-              email: "",
-              address: "",
-              password: "",
-              phone: "",
-              image: defaultProfile,
-            });
-            setLoading(false);
-            navigate("/");
-          })
-          .catch((error) => {
-            setLoading(false)
-            toast.error(error.response.data.msg, { position: "top-center" });
-            setFormData({
-              name: "",
-              email: "",
-              address: "",
-              password: "",
-              phone: "",
-              image: defaultProfile,
-            });
-            setLoading(false);
-          });
-      }
+      const { data } = await axios.post(url, payload);
+
+      localStorage.setItem("email", data.user.email);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("image", data.user.image);
+      setToken(data.token);
+      toast.success(data.msg, { position: "top-center" });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        image: defaultProfile,
+        address: { localArea: "", city: "", state: "", country: "", pin: "" },
+      });
+      navigate("/");
     } catch (error) {
-      console.error("Error hashing password:", error);
+      toast.error(error.response?.data?.msg || "An error occurred", {
+        position: "top-center",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,11 +100,11 @@ const AuthForm = ({ setToken }) => {
     imageRef.current.click(); // Trigger image file input click
   };
 
-  if(loading){
-    return <Spinner/>
+  if (loading) {
+    return <Spinner />;
   }
-  return (
 
+  return (
     <div className="auth-container">
       <div className="form-toggle">
         <button
@@ -180,8 +143,6 @@ const AuthForm = ({ setToken }) => {
                 onChange={handleChange}
                 ref={imageRef}
                 style={{ display: "none" }}
-                minLength={1}
-                maxLength={1}
               />
             </div>
 
@@ -210,7 +171,6 @@ const AuthForm = ({ setToken }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                minLength={12}
               />
             </div>
 
@@ -223,12 +183,9 @@ const AuthForm = ({ setToken }) => {
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => {
-                  const inputValue = e.target.value.replace(/[^0-9]/g, ""); // Allow only digits
+                  const inputValue = e.target.value.replace(/[^0-9]/g, "");
                   if (inputValue.length <= 10) {
-                    setFormData({
-                      ...formData,
-                      phone: inputValue,
-                    });
+                    setFormData({ ...formData, phone: inputValue });
                   }
                 }}
                 required
@@ -238,18 +195,62 @@ const AuthForm = ({ setToken }) => {
               />
             </div>
 
-            {/* Address Input */}
+            {/* Address Inputs */}
             <div className="form-group">
-              <label htmlFor="address">Company Address</label>
+              <label htmlFor="address.localArea">Local Area</label>
               <input
                 type="text"
-                name="address"
-                id="address"
-                value={formData.address}
+                name="address.localArea"
+                id="localArea"
+                value={formData.address.localArea}
                 onChange={handleChange}
                 required
-                minLength={5}
-                maxLength={50}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="address.city">City</label>
+              <input
+                type="text"
+                name="address.city"
+                id="city"
+                value={formData.address.city}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="address.state">State</label>
+              <input
+                type="text"
+                name="address.state"
+                id="state"
+                value={formData.address.state}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="address.country">Country</label>
+              <input
+                type="text"
+                name="address.country"
+                id="country"
+                value={formData.address.country}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="address.pin">PIN</label>
+              <input
+                type="text"
+                name="address.pin"
+                id="pin"
+                value={formData.address.pin}
+                onChange={handleChange}
+                required
+                pattern="[0-9]{6}" // PIN validation
+                maxLength={6}
               />
             </div>
 
@@ -263,7 +264,6 @@ const AuthForm = ({ setToken }) => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                minLength={6}
               />
             </div>
           </>
@@ -281,7 +281,6 @@ const AuthForm = ({ setToken }) => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                minLength={12}
               />
             </div>
 
@@ -294,7 +293,6 @@ const AuthForm = ({ setToken }) => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                minLength={6}
               />
             </div>
           </>

@@ -13,7 +13,7 @@ Routes.post('/login',login);
 Routes.post('/register',register);
 Routes.post('/create', newInvoive);
 Routes.post('/invoices', invoices);
-Routes.delete('/delete', deleteInvoice);
+Routes.delete('/delete/:id', deleteInvoice);
 Routes.post('/user',getUser);
 Routes.post('/search', searchCustomer); // this one for searching the customer by their name ,email etc.. 
 Routes.put('/update',update); // this one for update the company or user profile 

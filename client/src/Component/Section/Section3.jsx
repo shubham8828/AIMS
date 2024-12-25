@@ -40,16 +40,7 @@ const ShareInvoiceSection = () => {
               </p>
             </div>
           </div>
-          <div className="button-container">
-            <a
-              href="https://app.getAIMPS.in/auth/login"
-              className="button hidden-desktop"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Get Started with AIMPS
-            </a>
-          </div>
+          
         </div>
       </div>
     </div>

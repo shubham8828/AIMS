@@ -45,15 +45,16 @@ export const invoices = async (req, res) => {
     console.error("Error fetching invoices:", error);
     res.status(500).json({ msg: "Internal Server Error" });
   }
-};
+};  
 
 // delete invoice
+
 export const deleteInvoice = async (req, res) => {
   try {
-    const invoiceId = req.params.id;
+    const { id } = req.params;
 
     // Find the invoice by ID and delete it
-    const deletedInvoice = await Invoice.findByIdAndDelete(invoiceId);
+    const deletedInvoice = await Invoice.findByIdAndDelete(id);
 
     if (!deletedInvoice) {
       return res.status(404).json({ message: "Invoice not found" });
@@ -234,7 +235,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body)
+    // console.log(req.body)
     // Find the user by email
     const user = await User.findOne({ email });
 
@@ -272,14 +273,25 @@ export const update = async (req, res) => {
 
     // Find the user by ID
     const user = await User.findById(id);
+    // console.log(user);
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Update user fields
+    // Update individual user fields
     if (email) user.email = email;
     if (name) user.name = name;
-    if (address) user.address = address;
+
+    // Update individual address fields
+    if (address) {
+      const { city, state, pin, other } = address;
+
+      if (city) user.address.city = city;
+      if (state) user.address.state = state;
+      if (pin) user.address.pin = pin;
+      if (other) user.address.other = other;
+    }
 
     // Handle image upload if an image is provided
     if (image) {
@@ -287,7 +299,7 @@ export const update = async (req, res) => {
       const uploadResult = await cloudinary.uploader.upload(image, {
         upload_preset: "eeeghag0",
         public_id: `${email}_avatar`,
-        overwrite: true,
+        overwrite: true,  
         allowed_formats: ["png", "jpg", "jpeg", "svg"],
       });
 
@@ -299,14 +311,17 @@ export const update = async (req, res) => {
       user.image = uploadResult.secure_url; // Save the secure_url directly
     }
 
+    // Save the updated user
     await user.save();
 
     // Return success response with updated user data
     return res.status(200).json({ msg: "User updated successfully", user });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
 
 // GetUserDate API For User
 
@@ -439,7 +454,7 @@ export const makePayment = async (req, res) => {
 // Import Payment model.
 export const getUserPayments = async (req, res) => {
   const { email } = req.body; // Extract email from the request body.
-  console.log(email);
+  // console.log(email);
 
   try {
     // Step 1: Find all invoices created by the user.
@@ -506,7 +521,7 @@ export const getUserPayments = async (req, res) => {
 export const getInvoice = async (req, res) => {
   try {
     const { invoiceId } = req.body; // Extract invoiceID from the request body
-    console.log(req.body);
+    // console.log(req.body);
     // Check if the invoiceID is provided
     if (!invoiceId) {
       return res.status(400).json({ message: "Invoice ID is required" });

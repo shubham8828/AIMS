@@ -5,7 +5,9 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Spinner from "../Component/Spinner.jsx"; // Import your Spinner component
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
-import Download from '../asset/download.png'
+import Download from "../asset/download.png";
+
+
 const PaymentList = () => {
   const [paymentData, setPaymentData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -85,34 +87,36 @@ const PaymentList = () => {
     }
   };
 
-    const downloadTableData = () => {
-      // Create a worksheet from the filtered payment data
-      const ws = XLSX.utils.json_to_sheet(filteredData.map((payment, index) => ({
+  const downloadTableData = () => {
+    // Create a worksheet from the filtered payment data
+    const ws = XLSX.utils.json_to_sheet(
+      filteredData.map((payment, index) => ({
         "Sr. No.": startIndex + index + 1,
         "Invoice ID": payment.invoiceId,
         "Customer Name": payment.customerName,
-        "Phone": payment.customerPhone,
-        "Amount": payment.amount.toFixed(2),
-        "Currency": payment.currency,
+        Phone: payment.customerPhone,
+        Amount: payment.amount.toFixed(2),
+        Currency: payment.currency,
         "Payment Status": payment.paymentStatus,
         "Payment Date": payment.paymentDate
           ? new Date(payment.paymentDate).toLocaleDateString()
           : "N/A",
         "Payment Method": payment.paymentMethod,
         "Payment ID": payment.paymentId,
-        "Card Details": payment.paymentMethod === "Card" && payment.cardDetails
-          ? `**** **** **** ${payment.cardDetails.cardNumber.slice(-4)}`
-          : "N/A",
-      })));
-    
-      // Create a workbook and append the worksheet
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Payments");
-    
-      // Trigger the download
-      XLSX.writeFile(wb, "Payment_Data.xlsx");
-    };
-    
+        "Card Details":
+          payment.paymentMethod === "Card" && payment.cardDetails
+            ? `**** **** **** ${payment.cardDetails.cardNumber.slice(-4)}`
+            : "N/A",
+      }))
+    );
+
+    // Create a workbook and append the worksheet
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Payments");
+
+    // Trigger the download
+    XLSX.writeFile(wb, "Payment_Data.xlsx");
+  };
 
   if (loading) {
     return <Spinner />; // Show spinner while loading
@@ -140,15 +144,10 @@ const PaymentList = () => {
             <option value="Successful">Successful</option>
           </select>
 
-          <button
-          className="report-download-btn"
-          onClick={downloadTableData}
-          
-        >
-          <img src={Download} className="report-download-btn-icon"/>
-        </button>
+          <button className="report-download-btn" onClick={downloadTableData}>
+            <img src={Download} className="report-download-btn-icon" />
+          </button>
         </div>
-        
       </div>
 
       <table
@@ -204,7 +203,9 @@ const PaymentList = () => {
               </td>
               <td>
                 {transaction.paymentDate
-                  ? new Date(transaction.paymentDate).toLocaleDateString()
+                  ? new Date(transaction.paymentDate).toLocaleDateString(
+                      "en-GB"
+                    )
                   : "N/A"}
               </td>
               <td>{transaction.paymentMethod}</td>

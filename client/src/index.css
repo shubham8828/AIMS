@@ -14,7 +14,7 @@
 }
 
 main{
-  width: 100vw;
+  width: 96vw;
   height: auto;
   min-height: 100vh;
   display: flex;
@@ -224,7 +224,7 @@ ul li {
 
 /* Home Container */
 .home-container {
-  width: 100%;
+  width: 95%;
   height: auto;
   padding: 20px;
   margin: 0 auto;
@@ -620,15 +620,17 @@ h1 span {
 
 .homeContainer {
   height: 100vh;
-  width: 100%;
+  width: 100%; /* Ensure it doesn't exceed the viewport width */
+  margin: 0; /* Remove any extra margins causing overflow */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 0px;
-  background: url('../src/asset/image.png') center no-repeat;
-  background-size: cover;
+  background: url('../src/asset/image.png') center center no-repeat; /*Center the background image */
+  background-size: cover; /* Scale the image to cover the container */
 }
+
 
 .homeContainer button {
   font-weight: 600;
@@ -647,7 +649,7 @@ h1 span {
   left: 65vw;
 }
 .billing{
-  width: 100vw;
+  width: auto;
 }
 .homeContainer button:hover {
   box-shadow: 0px 0px 5px cyan,
@@ -2443,7 +2445,6 @@ button:disabled {
 /* ShareInvoiceSection.css */
 
 .section-container {
-  overflow: hidden;
   max-width: 1120px;
   margin: 0 auto;
   padding: 1.5rem 1rem;
@@ -2548,12 +2549,6 @@ button:disabled {
 
 /* GSTFilingsSection.css */
 
-.section-container {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
-}
-
 .section-content {
   padding: 1.5rem 0;
   display: grid;
@@ -2654,11 +2649,6 @@ button:disabled {
 
 /* InventoryManagementSection.css */
 
-.section-container {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
-}
 
 .section-content {
   padding: 1.5rem 0;
@@ -2759,10 +2749,6 @@ button:disabled {
 
 /* PaymentSection.css */
 
-.section-container {
-  overflow: hidden;
-}
-
 .section-content {
   max-width: 1120px;
   margin: 0 auto;
@@ -2862,9 +2848,6 @@ button:disabled {
 
 /* AnalyticsSection.css */
 
-.section-container {
-  overflow: hidden;
-}
 
 .section-content {
   max-width: 1120px;

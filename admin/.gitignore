@@ -23,10 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# echo "# IMS" >> README.md
 # git init
 # git add README.md
 # git commit -m "first commit"
 # git branch -M main
-# git remote add origin https://github.com/shubham8828/IMS.git
+# git remote add origin https://github.com/shubham8828/AIMS.git
 # git push -u origin main

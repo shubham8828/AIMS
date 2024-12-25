@@ -4,30 +4,50 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, 
+    unique: true,
   },
   name: {
     type: String,
     required: true,
   },
-  phone:{
-    type:String,
-    required:true
+  phone: {
+    type: String,
+    required: true,
   },
   address: {
+    localArea: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    pin: {
+      type: String,
+      required: true,
+    },
+  },
+  password: {
     type: String,
     required: true,
   },
-  password: { 
-    type: String,
-    required: true,
+  image: {
+    type: String, // URL or Base64 string
   },
-  image:{type:String}, 
   createdAt: {
     type: Date,
-    default: Date.now,  // Automatically set the current date when the document is created
-  }
+    default: Date.now, // Automatically set the current date when the document is created
+  },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;

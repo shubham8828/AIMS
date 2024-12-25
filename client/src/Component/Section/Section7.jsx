@@ -36,24 +36,7 @@ const Section7 = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="button-container">
-                        <a
-                            href="https://play.google.com/store/apps/details?id=in.AIMPS.app"
-                            className="button hidden-mobile"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Get Sale Reports
-                        </a>
-                        <a
-                            href="https://app.getAIMPS.in/auth/login"
-                            className="button hidden-desktop"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Get Sale Reports
-                        </a>
-                    </div>
+                   
                 </div>
                 
             </div>

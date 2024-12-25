@@ -23,24 +23,7 @@ const InvoiceSection = () => {
                             <p>AIMPS free GST billing Software offers a complete solution for creating instant bills and increasing productivity professionally.</p>
                         </div>
                     </div>
-                    <div className="button-container">
-                        <a
-                            href="https://play.google.com/store/apps/details?id=in.AIMPS.app"
-                            className="button hidden-mobile"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Create Invoices for FREE
-                        </a>
-                        <a
-                            href="https://app.getAIMPS.in/auth/login"
-                            className="button hidden-desktop"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Create Invoices for FREE
-                        </a>
-                    </div>
+                
                 </div>
                 <div className="image-container">
                     <img
