@@ -22,7 +22,7 @@ Routes.post('/payment',makePayment)
 Routes.post('/payment-data',getUserPayments)
 Routes.post('/getInvoice',getInvoice)
 Routes.post('/getPaymentData',getPaymentData)
-Routes.post('/users',getUsers)
+Routes.get('/users',getUsers)
 Routes.post('/messages',getMessages);
 Routes.post('/newmessage',newMessages);
 export default Routes;

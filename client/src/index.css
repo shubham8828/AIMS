@@ -3495,15 +3495,6 @@ table tbody tr td:last-child {
   font-weight: bold;
 }
 
-.sender-icon {
-  color: #007bff; /* Blue for the user */
-  margin-right: 8px;
-}
-
-.admin-icon {
-  color: #28a745; /* Green for the admin */
-  margin-right: 8px;
-}
 
 .messages {
   flex: 1;
@@ -3530,6 +3521,8 @@ table tbody tr td:last-child {
 .received {
   align-self: flex-start;
   background-color: #ffffff;
+  min-width: 100px;
+  padding: 10px;
 }
 
 .message-text {

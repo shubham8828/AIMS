@@ -27,6 +27,7 @@ const Support = () => {
         console.error("Error fetching messages:", error);
       });
   };
+  
   const handleSendMessage = () => {
     if (newMessage.trim() === "") return;
   

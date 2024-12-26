@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { FaPaperPlane } from "react-icons/fa";
 
 const Message = () => {
   const [messages, setMessages] = useState([]);
@@ -7,62 +8,81 @@ const Message = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [newMessage, setNewMessage] = useState("");
 
-  // Fetch messages and users from the API on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersResponse = await axios.get("http://localhost:4000/api/users");
-        setUsers(usersResponse.data.users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
     fetchData();
   }, []);
 
-  const handleUserClick = async (userId, email) => {
-    // Set selected user
-    setSelectedUser(userId);
-
-    try {
-      // Fetch messages for the selected user based on their email ID
-      const messagesResponse = await axios.post(
-        "http://localhost:4001/messages",
-        { email }
-      );
-      setMessages(messagesResponse.data.messages);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
+  useEffect(() => {
+    if (selectedUser && users.length > 0) {
+      getMessageData();
     }
+  }, [selectedUser, users]);
+
+  const fetchData = async () => {
+    try {
+      const usersResponse = await axios.get("http://localhost:4000/api/users");
+      setUsers(usersResponse.data.users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const getMessageData = () => {
+    if (!selectedUser) return;
+
+    const sender = "aimps24x7@gmail.com";
+    const receiver = users.find((user) => user._id === selectedUser)?.email;
+
+    if (!receiver) {
+      console.error("Receiver email not found");
+      return;
+    }
+
+    axios
+      .post("http://localhost:4000/api/messages", { sender, receiver })
+      .then((response) => {
+        setMessages(response.data.conversation.message || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching messages:", error);
+      });
+  };
+
+  const handleUserClick = (userId) => {
+    setSelectedUser(userId);
   };
 
   const handleSendMessage = () => {
-    if (newMessage && selectedUser) {
-      const currentTime = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true, // AM/PM format
-      });
+    if (newMessage.trim() === "") return;
 
-      const message = {
-        message: newMessage,
-        sender: "admin",
-        userId: selectedUser,
-        time: currentTime, // Add the current time to the message
-      };
-      setMessages([...messages, message]);
-      setNewMessage(""); // Clear the input field after sending the message
+    const newMessageObject = {
+      sender: "aimps24x7@gmail.com",
+      msg: newMessage,
+      createdAt: Date.now(),
+    };
+
+    setMessages((prevMessages) => [...prevMessages, newMessageObject]);
+    setNewMessage("");
+
+    const collectedData = {
+      sender: "aimps24x7@gmail.com",
+      receiver: users.find((user) => user._id === selectedUser)?.email,
+      message: [newMessageObject],
+    };
+
+    if (!collectedData.receiver) {
+      console.error("Receiver email not found for sending message");
+      return;
     }
-  };
 
-  const formatMessageTime = (createdAt) => {
-    const time = new Date(createdAt).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true, // AM/PM format
-    });
-    return time;
+    axios
+      .post("http://localhost:4000/api/newmessage", collectedData)
+      .then((response) => {
+        console.log("Message sent successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
   };
 
   return (
@@ -73,7 +93,7 @@ const Message = () => {
           {users.map((user) => (
             <li
               key={user._id}
-              onClick={() => handleUserClick(user._id, user.email)}
+              onClick={() => handleUserClick(user._id)}
             >
               <div className="user-item">
                 <img src={user.image} alt={user.name} className="user-avatar" />
@@ -97,20 +117,20 @@ const Message = () => {
               {messages.map((msg, index) => (
                 <div
                   key={index}
-                  className={msg.sender === "You" ? "sent" : "received"}
+                  className={msg.sender === "aimps24x7@gmail.com" ? "sent" : "received"}
                 >
-                  <p>{msg.message}</p>
+                  <p>{msg.msg}</p>
                   <span className="message-time">
-                    {msg.sender === "You"
-                      ? msg.time
-                      : formatMessageTime(msg.createdAt)}{" "}
-                    {/* Format the time depending on whether it's a sent or received message */}
+                    {new Date(msg.createdAt).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
                   </span>
                 </div>
               ))}
             </div>
 
-            {/* Input field at the bottom */}
             <div className="message-input">
               <input
                 type="text"
@@ -118,7 +138,9 @@ const Message = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
-              <button onClick={handleSendMessage}>Send</button>
+              <button onClick={handleSendMessage}>
+                <FaPaperPlane />
+              </button>
             </div>
           </div>
         ) : (

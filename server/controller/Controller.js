@@ -593,7 +593,7 @@ export const getMessages = async (req, res) => {
 export const newMessages = async (req, res) => {
   try {
     const { sender, receiver, message } = req.body;
-
+        console.log(req.body)
     // Check if any required field is missing
     if (!sender || !receiver ) {
       return res.status(400).json({ error: "Missing Sender, Receiver, or Message" });
