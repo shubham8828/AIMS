@@ -3469,6 +3469,116 @@ table tbody tr td:last-child {
 }
 
 
+/* -------------- Support Page ---------------- */
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  height: 90vh;
+  margin: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #e5ddd5;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.chat-header {
+  background-color: #075e54;
+  color: rgb(246, 241, 241);
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.sender-icon {
+  color: #007bff; /* Blue for the user */
+  margin-right: 8px;
+}
+
+.admin-icon {
+  color: #28a745; /* Green for the admin */
+  margin-right: 8px;
+}
+
+.messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  margin-bottom: 15px;
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  position: relative;
+}
+
+.sent {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  min-width: 100px;  
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #ffffff;
+}
+
+.message-text {
+  margin: 0;
+  font-size: 1em;
+}
+
+.message-time {
+  font-size: 0.8em;
+  color: #555;
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
+
+}
+
+.message-input {
+  display: flex;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ddd;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 1em;
+  margin-right: 10px;
+}
+
+.message-input button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  width: 50px;
+  border-radius: 50%;
+}
+
+.message-input button:hover {
+  background-color: #054c44;
+}
+
 
 
 

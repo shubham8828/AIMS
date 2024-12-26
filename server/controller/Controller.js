@@ -339,37 +339,6 @@ export const getUser = async (req, res) => {
   }
 };
 
-//  Message API that enable to send the message to addmin for any types of issue or customer support
-
-export const message = async (req, res) => {
-  const { name, email, message } = req.body;
-  // console.log(req.body)
-
-  try {
-    // Validate the message data (Optional: You can add more validation here)
-    if (!name || !email || !message) {
-      return res
-        .status(400)
-        .json({ error: "All fields (name, email, message) are required" });
-    }
-
-    // Create a new message instance
-    const newMessage = new Message({
-      name,
-      email,
-      message,
-    });
-
-    // Save the message to the database
-    await newMessage.save();
-
-    // Respond with success
-    res.status(201).json({ message: "Message sent successfully" });
-  } catch (error) {
-    console.error("Error saving message:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-};
 
 //------------------------------- Save Payment Data API ------------------------------
 
@@ -571,20 +540,6 @@ export const getPaymentData = async (req, res) => {
 // ----------------   get All Users ----------------------
 
 
-export const getMessages = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    // Fetch messages based on the user's email
-    const messages = await Message.find({email });
-    res.json({ messages });
-  } catch (error) {  
-    console.error('Error fetching messages:', error);
-    res.status(500).send('Server error');
-  }
-};
-
-
 export const getUsers = async (req, res) => {
 
   try {
@@ -601,3 +556,102 @@ export const getUsers = async (req, res) => {
     
   }
 }
+
+// --------------------------- Get all messages of one conversation---------------------
+
+export const getMessages = async (req, res) => {
+  try {
+        const { sender, receiver} = req.body;
+        // Check if any required field is missing
+        if (!sender || !receiver ) {
+          return res.status(400).json({ error: "Missing Sender, Receiver" });
+        }
+    
+        // Find an existing conversation between sender and receiver
+        let conversation = await Message.findOne({
+          $or: [
+            { sender: sender, receiver: receiver },
+            { sender: receiver, receiver: sender }
+          ]
+        });
+    
+        // If conversation exists, add the new message to the conversation's message array
+        if (conversation) {
+          return res.status(200).json({conversation})
+        }
+        else{
+          return res.status(404).json({error:"Conversation Not Found"})
+        }
+  }
+  catch(error ){
+
+  }
+
+}
+
+// -------------------- Customer Support API -------------------------
+export const newMessages = async (req, res) => {
+  try {
+    const { sender, receiver, message } = req.body;
+
+    // Check if any required field is missing
+    if (!sender || !receiver ) {
+      return res.status(400).json({ error: "Missing Sender, Receiver, or Message" });
+    }
+
+    // Find an existing conversation between sender and receiver
+    let conversation = await Message.findOne({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender }
+      ]
+    });
+
+    // If conversation exists, add the new message to the conversation's message array
+    if (conversation) {
+      const currentTime = new Date(); // Create a valid Date object
+
+      // Add each message to the conversation
+      if(message.length === 0 ){
+          return res.status(500).json({error:" Message Cant Empty"})
+      }else{
+
+      
+      message.forEach(msg => {
+        conversation.message.push({
+          msg: msg.msg,
+          createdAt: currentTime, // Store a Date object
+          sender: msg.sender
+        });
+      });
+    }
+
+      // Save the updated conversation
+      await conversation.save();
+      console.log('Message(s) added to existing conversation');
+      return res.status(200).json({ message: 'Message(s) added to existing conversation' });
+    } else {
+      // If no conversation exists, create a new conversation
+      const currentTime = new Date(); // Create a valid Date object
+
+      const newConversation = new Message({
+        sender,
+        receiver,
+        message: message.map(msg => ({
+          msg: msg.msg,
+          createdAt: currentTime, // Store a Date object
+          sender: msg.sender
+        }))
+      });
+
+      // Save the new conversation
+      await newConversation.save();
+      console.log('New conversation created and message(s) added');
+      return res.status(201).json({ message: 'New conversation created and message(s) added' });
+    }
+  } catch (error) {
+    console.error('Error adding message:', error);
+    return res.status(500).json({ error: 'Error adding message', details: error.message });
+  }
+};
+

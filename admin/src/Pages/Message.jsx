@@ -47,7 +47,7 @@ const Message = () => {
 
       const message = {
         message: newMessage,
-        sender: "You",
+        sender: "admin",
         userId: selectedUser,
         time: currentTime, // Add the current time to the message
       };
