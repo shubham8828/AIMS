@@ -356,3 +356,305 @@ button {
   }
 }
 
+/* ----- User Profile Update css --------------------- */
+
+.profile-container {
+
+  width: 80%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* Softer shadow for modern look */
+  padding: 30px 0%;
+  transition: all 0.3s ease-in-out;
+  padding: 20px 50px;
+}
+
+/* Form Styles */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333; /* Darker text color for readability */
+}
+
+.form-group input {
+  padding: 12px;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #007bff; /* Blue border on focus for accessibility */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Soft shadow on focus */
+}
+
+/* Submit Button */
+.submit-btn {
+  padding: 12px;
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Subtle lift effect on hover */
+}
+
+/* Profile Image Styling */
+.profile-image,
+.image-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.profile-image img {
+  height: 100px;
+  width: 100px;
+  margin-top: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.profile-image img:hover {
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* Responsive Design */
+
+/* For screens up to 1024px */
+@media screen and (max-width: 1024px) {
+  .profile-container {
+      width: 80%;
+      padding: 25px 5%;
+  }
+  .form-group label,
+  .submit-btn {
+      font-size: 1rem;
+  }
+}
+
+/* For screens up to 800px */
+@media screen and (max-width: 800px) {
+  .profile-container {
+      width: 85%;
+      padding: 20px 5%;
+  }
+  .form-group input {
+      font-size: 0.95rem;
+  }
+}
+
+/* For screens up to 600px */
+@media screen and (max-width: 600px) {
+  .profile-container {
+      width: 90%;
+      padding: 18px 4%;
+  }
+  .form-group input {
+      font-size: 0.9rem;
+  }
+  .submit-btn {
+      padding: 10px;
+  }
+  .profile-image img {
+      height: 90px;
+      width: 90px;
+  }
+}
+
+/* For screens up to 400px */
+@media screen and (max-width: 400px) {
+  .profile-container {
+      width: 90%; /* Full width on very small screens */
+      padding: 15px 3%;
+  }
+  .form-group input {
+      font-size: 0.85rem;
+  }
+  .submit-btn {
+      padding: 8px;
+      font-size: 0.9rem;
+  }
+  .profile-image img {
+      height: 80px;
+      width: 80px;
+  }
+}
+
+
+/* ------------------------- Dashboard -------------------- */
+
+.card-container {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40px;
+  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+}
+
+/* Card Design - Neumorphism + Glassmorphism */
+.card {
+  background: rgba(255, 255, 255, 0.1); /* Glass effect with transparency */
+  border-radius: 20px;
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.1); /* Neumorphism */
+  backdrop-filter: blur(10px); /* Blurs the background for glassmorphism */
+  border: 2px solid rgba(255, 255, 255, 0.1); /* Soft white border */
+  background: linear-gradient(145deg, #6e7dff, #4d58e6); /* Linear gradient for modern look */
+  color: #fff;
+  transition: all 0.3s ease;
+  margin-bottom: 20px; /* Adds space between cards on smaller screens */
+}
+
+.card:hover {
+  box-shadow: 15px 15px 30px rgba(0, 0, 0, 0.1), -15px -15px 30px rgba(255, 255, 255, 0.1); /* Hover effect */
+  transform: translateY(-5px); /* Slight lift effect on hover */
+}
+
+/* Card Text */
+.card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.card p {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #fff;
+}
+
+.card .icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px; /* Center cards and add space between them */
+  }
+
+}
+
+
+.chart {
+  width: 96%;
+  background:transparent; /* Dark gradient background */
+  height: auto;
+  padding: 20px;
+  border-radius: 15px; /* Rounded corners for a modern feel */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Soft outer shadow for depth */
+}
+
+.chart .line{
+  height: auto;
+  width: 100%;
+  border-radius: 10px; /* Rounded corners for chart elements */
+  background-color:transparent; /* Fresh blue */
+  box-shadow: 0 4px 10px black; 
+}
+
+
+/* Pie Chart */
+.chart .pie {
+  height: 350px;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0px;
+  background-color: transparent; /* Fresh green-blue */
+  margin-top: 30px; /* Reduced margin for a balanced layout */
+  box-shadow: 0 4px 10px black; /* Soft shadow */
+  border-radius: 10px; /* Rounded corners for chart elements */
+
+}
+
+.line:hover {
+  transform: scale(1.02); /* Slight zoom-in effect */
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+.pie:hover {
+  transform: scale(1.02); /* Slight zoom-in effect */
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+
+
+------------ Spinner CSS --------------- /* Spinner.css */
+
+/* Container for the payment spinner */
+.payment-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+}
+
+/* Spinner overlay to cover the entire screen */
+.spinner-overlay {
+  position: fixed; /* Fix the spinner to cover the full screen */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Ensure it appears above other content */
+}
+
+/* Spinner animation */
+.spinner {
+  border: 4px solid #f3f3f3; /* Light gray background */
+  border-top: 4px solid #3498db; /* Blue spinner color */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+/* Animation for spinning */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

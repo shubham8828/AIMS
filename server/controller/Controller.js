@@ -5,6 +5,7 @@ import bcrypt from "bcrypt"; // To hash the password
 import jwt from "jsonwebtoken"; // To generate JWT tokens
 import cloudinary from "../cloudinary.js";
 import Payment from "../model/payment.js";
+import Admin from "../model/Admin.js";
 
 export const newInvoive = async (req, res) => {
   try {
@@ -51,10 +52,12 @@ export const invoices = async (req, res) => {
 
 export const deleteInvoice = async (req, res) => {
   try {
-    const { id } = req.params;
+
+    const { userId } = req.body;
+    console.log(req.body)
 
     // Find the invoice by ID and delete it
-    const deletedInvoice = await Invoice.findByIdAndDelete(id);
+    const deletedInvoice = await Invoice.findByIdAndDelete(userId);
 
     if (!deletedInvoice) {
       return res.status(404).json({ message: "Invoice not found" });
@@ -266,6 +269,7 @@ export const login = async (req, res) => {
 };
 
 // Update API For User
+
 export const update = async (req, res) => {
   try {
     const id = req.body._id; // User ID from the body
@@ -323,6 +327,7 @@ export const update = async (req, res) => {
 };
 
 
+
 // GetUserDate API For User
 
 export const getUser = async (req, res) => {
@@ -337,7 +342,28 @@ export const getUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Internal Server Error" });
   }
+}; 
+
+// ---------------------- delete user API for admin ----------------------------
+
+export const deleteUser = async (req, res) => {
+  const { userId } = req.params; // Extract `userId` from URL parameters
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId); // Find and delete user by ID
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfully', user: deletedUser });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
 };
+
+
+
 
 
 //------------------------------- Save Payment Data API ------------------------------
@@ -654,4 +680,12 @@ export const newMessages = async (req, res) => {
     return res.status(500).json({ error: 'Error adding message', details: error.message });
   }
 };
+
+// -------   Add New Admin -------------
+
+export const addAdmin = async (req, res) => {
+
+  
+
+}
 

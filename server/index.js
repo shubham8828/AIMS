@@ -8,11 +8,13 @@ import Routes from './routes/Routes.js';
 dotenv.config();
 const app = express();    
 app.use(cors(
+    
     // {
     //     origin: ["https://aimsps.vercel.app/","http://localhost:5173/"],
     //     methods: ["POST", "GET","PUT","DELETE"],
     //     credentials: true
     // }
+
 ));
 app.use(express.json());
 

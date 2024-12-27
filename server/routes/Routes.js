@@ -3,7 +3,8 @@ import express from 'express';
 import {
         deleteInvoice, invoices, newInvoive, searchCustomer,updateInvoice, 
         getUser, login, register,update,makePayment,newMessages,
-        getUserPayments,getInvoice,getPaymentData,getMessages,getUsers 
+        getUserPayments,getInvoice,getPaymentData,getMessages,getUsers ,
+        deleteUser
 
     } from '../controller/Controller.js';
 
@@ -23,6 +24,10 @@ Routes.post('/payment-data',getUserPayments)
 Routes.post('/getInvoice',getInvoice)
 Routes.post('/getPaymentData',getPaymentData)
 Routes.get('/users',getUsers)
+Routes.delete('/deleteuser/:userId',deleteUser)
+
+
+
 Routes.post('/messages',getMessages);
 Routes.post('/newmessage',newMessages);
 export default Routes;
