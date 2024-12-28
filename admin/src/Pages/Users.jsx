@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa'; // Import icons for Edit and Delete
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../component/Spinner';
 
 const Users = () => {
   const [users, setUsers] = useState([]); // State to store users data
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [loading, setLoading] = useState(true); // State to track loading status
   const navigate = useNavigate();
 
   // Fetch users from the API on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setLoading(true); // Start loading
         const response = await axios.get('http://localhost:4000/api/users');
         setUsers(response.data.users); // Assuming the response has users in `data.users`
       } catch (error) {
         console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -28,15 +33,16 @@ const Users = () => {
   };
 
   // Handle delete action
-  const handleDelete = (userId) => {
-    axios
-      .delete(`http://localhost:4000/api/deleteuser/${userId}`)
-      .then(() => {
-        setUsers(users.filter((user) => user._id !== userId)); // Remove the deleted user from state
-      })
-      .catch((error) => {
-        console.error('Error deleting user:', error);
-      });
+  const handleDelete = async (userId) => {
+    try {
+      setLoading(true); // Start loading
+      await axios.delete(`http://localhost:4000/api/deleteuser/${userId}`);
+      setUsers(users.filter((user) => user._id !== userId)); // Remove the deleted user from state
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
 
   // Filter users based on search query
@@ -53,6 +59,11 @@ const Users = () => {
       (users.indexOf(user) + 1).toString().includes(query) // Match Sr No.
     );
   });
+
+  // Show spinner if loading
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>

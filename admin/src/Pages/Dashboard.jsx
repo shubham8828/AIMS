@@ -2,17 +2,22 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import LineChart from '../component/LineChart';
 import PieChart from '../component/PieChart';
+import Spinner from '../component/Spinner';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
-  const [cities, setCities] = useState(new Set());  // Set to store unique cities
-  const [states, setStates] = useState(new Set());  // Set to store unique states
+  const [cities, setCities] = useState(new Set()); // Set to store unique cities
+  const [states, setStates] = useState(new Set()); // Set to store unique states
   const [monthData, setMonthData] = useState({ labels: [], datasets: [] });
   const [cityData, setCityData] = useState({ labels: [], datasets: [] });
   const [stateData, setStateData] = useState({ labels: [], datasets: [] });
+  const [loading, setLoading] = useState(true); // Track loading state
 
   // Month names array
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
   useEffect(() => {
     // Fetch data from API
@@ -41,16 +46,16 @@ const Dashboard = () => {
           stateCount[state] = (stateCount[state] || 0) + 1;
         });
 
-        setCities(citySet);  // Update the cities set
-        setStates(stateSet);  // Update the states set
+        setCities(citySet); // Update the cities set
+        setStates(stateSet); // Update the states set
 
         // Prepare the city data for Pie chart
         const cityLabels = Object.keys(cityCount);
-        const cityUserCounts = cityLabels.map(city => cityCount[city]);
+        const cityUserCounts = cityLabels.map((city) => cityCount[city]);
 
         // Prepare the state data for Pie chart
         const stateLabels = Object.keys(stateCount);
-        const stateUserCounts = stateLabels.map(state => stateCount[state]);
+        const stateUserCounts = stateLabels.map((state) => stateCount[state]);
 
         // Set the cityData and stateData for Pie chart
         setCityData({
@@ -59,8 +64,8 @@ const Dashboard = () => {
             {
               data: cityUserCounts,
               backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Use dynamic or static colors as needed
-            }
-          ]
+            },
+          ],
         });
 
         setStateData({
@@ -69,58 +74,73 @@ const Dashboard = () => {
             {
               data: stateUserCounts,
               backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#FF5733'], // Use dynamic or static colors as needed
-            }
-          ]
+            },
+          ],
         });
 
         // Initialize an array to hold the user count for each month
-        const monthCount = new Array(12).fill(0);  // Initialize all months with 0
+        const monthCount = new Array(12).fill(0); // Initialize all months with 0
 
         // Calculate user registration count per month
         userData.forEach((user) => {
           const date = new Date(user.createdAt);
-          const monthIndex = date.getMonth();  // Get the 0-based month index (0 = January, 1 = February, etc.)
-          monthCount[monthIndex] += 1;  // Increment the count for the corresponding month
+          const monthIndex = date.getMonth(); // Get the 0-based month index (0 = January, 1 = February, etc.)
+          monthCount[monthIndex] += 1; // Increment the count for the corresponding month
         });
 
         // Set the data for the Line Chart
         setMonthData({
-          labels: monthNames,  // Month names as x-axis labels
+          labels: monthNames, // Month names as x-axis labels
           datasets: [
             {
               label: 'Users Registered',
-              data: monthCount,  // Array of user counts per month
+              data: monthCount, // Array of user counts per month
               fill: false,
               borderColor: '#42A5F5',
               tension: 0.1,
-            }
-          ]
+            },
+          ],
         });
+
+        // Set loading to false after data is fetched
+         setLoading(false);
       })
-      .catch((error) => console.error('Error fetching user data:', error));
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+        setLoading(false); // Stop loading even if there is an error
+      });
   }, []);
 
+  if (loading) {
+    // Show Spinner while data is loading
+    return <Spinner />;
+  }
+
+  // Render the dashboard once data is loaded
   return (
     <div className="dashboard-container">
-      <div className="card-container" style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '40px' }}>
+      <div
+        className="card-container"
+        style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '40px' }}
+      >
         <div className="card">
           <h2>Total Users</h2>
           <p>{users.length}</p>
         </div>
         <div className="card">
           <h2>Total Cities</h2>
-          <p>{cities.size}</p>  {/* Display unique cities count */}
+          <p>{cities.size}</p> {/* Display unique cities count */}
         </div>
         <div className="card">
           <h2>Total States</h2>
-          <p>{states.size}</p>  {/* Display unique states count */}
+          <p>{states.size}</p> {/* Display unique states count */}
         </div>
       </div>
 
-      <div className='chart'>
+      <div className="chart">
         {/* Pass the dynamically generated monthData to LineChart */}
         <LineChart monthData={monthData} />
-        
+
         {/* Pass the dynamically generated cityData and stateData to PieChart */}
         <PieChart cityData={cityData} stateData={stateData} />
       </div>

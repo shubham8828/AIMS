@@ -1,34 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { useNavigate ,useLocation} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ImageCompressor from 'image-compressor.js'; // For image compression
-import { ImSpinner3 } from "react-icons/im";
+import Spinner from '../component/Spinner'; // Import your spinner component
 
 const Profile = () => {
-  const [user, setUser] = useState(null); // Store user data
   const [formData, setFormData] = useState({}); // Store form data
   const navigate = useNavigate();
-  const imageRef = useRef(); 
-  const [loading, setLoading] = useState(false);
+  const imageRef = useRef();
+  const [loading, setLoading] = useState(true); // Initial loading state set to true
+  const [updating, setUpdating] = useState(false); // State for form submission
   const location = useLocation();
 
-  
-
   useEffect(() => {
-    const email = location.state?.email; 
+    const email = location.state?.email;
     const fetchUserData = async () => {
       try {
         const res = await axios.post('http://localhost:4000/api/user', { email });
-        setUser(res.data.user);
         setFormData(res.data.user);
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        console.error('Failed to fetch user data:', error);
         // navigate('/login'); // Redirect to login if error occurs
+      } finally {
+        setLoading(false); // Stop loading spinner
       }
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -61,16 +60,17 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setUpdating(true); // Start the updating spinner
     try {
       const res = await axios.put('http://localhost:4000/api/update', formData);
       localStorage.setItem('email', res.data.user.email);
       localStorage.setItem('image', res.data.user.image);
-      setLoading(false);
       // toast.success('Profile updated successfully', { position: 'top-center' });
     } catch (error) {
-      setLoading(false);
+      console.error('Failed to update profile:', error);
       // toast.error('Failed to update profile', { position: 'top-center' });
+    } finally {
+      setUpdating(false); // Stop the updating spinner
     }
   };
 
@@ -78,16 +78,16 @@ const Profile = () => {
     imageRef.current.click(); // Trigger image file input click
   };
 
-  if (!user) {
-    return <div>Loading...</div>; // Show loading state while fetching user data
+  if (loading || updating ) {
+    return <Spinner />; // Show spinner while loading data
   }
 
   return (
     <div className='profile-container'>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Company Profile Setting</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>User Profile</h2>
       <form className="profile-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="image" className="image-label" style={{ textAlign: 'center', marginBottom: '20px' }}>Company Logo</label>
+          <label htmlFor="image" className="image-label" style={{ textAlign: 'center', marginBottom: '20px' }}>Profile Image</label>
           <div onClick={triggerImageUpload} className="profile-image">
             <img src={formData.image} alt="Profile" className="profile-pic" />
           </div>
@@ -103,7 +103,7 @@ const Profile = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="name">Company Name</label>
+          <label htmlFor="name">Name</label>
           <input
             type="text"
             name="name"
@@ -117,7 +117,7 @@ const Profile = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Company Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             name="email"
@@ -129,7 +129,7 @@ const Profile = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Company Phone</label>
+          <label htmlFor="phone">Phone</label>
           <input
             type="tel"
             name="phone"
@@ -213,7 +213,7 @@ const Profile = () => {
           />
         </div>
 
-        <button type="submit" className="submit-btn">{loading && <ImSpinner3 />} Update Company Profile</button>
+        <button type="submit" className="submit-btn" disabled={updating}> Update User </button>
       </form>
     </div>
   );

@@ -683,9 +683,121 @@ export const newMessages = async (req, res) => {
 
 // -------   Add New Admin -------------
 
+
+
 export const addAdmin = async (req, res) => {
+    const { email, name, phone, password} = req.body;
+    console.log(req.body)
 
+    try {
   
+        // Destructure the incoming data from the request body
 
-}
+        // Validate the required fields
+        if (!email || !name || !phone || !password) {
+            return res.status(400).json({
+                message: 'All required fields (email, name, phone, password) must be provided',
+            });
+        }
 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Create a new Admin instance
+        const newAdmin = new Admin({
+            email,
+            name,
+            phone,
+            password:hashedPassword,
+        });
+
+        // Save the admin to the database
+        const savedAdmin = await newAdmin.save();
+
+        // Send a success response
+        res.status(201).json({
+            message: 'Admin added successfully',
+            admin: savedAdmin,
+        });
+    } catch (error) {
+        // Handle duplicate email error
+        if (error.code === 11000) {
+            return res.status(400).json({
+                message: 'Admin already exists',
+            });
+        }
+
+        // Log and return any other errors
+        console.error('Error adding admin:', error);
+        res.status(500).json({
+            message: 'Internal server error',
+        });
+    }
+};
+
+// ------------------------ Get All Admins ---------------------
+
+
+export const getAdmins = async (req, res) => {
+    try {
+
+        const admins = await Admin.find();
+
+        // Check if admins exist
+        if (admins.length === 0) {
+            return res.status(404).json({
+                message: 'No admins found',
+            });
+        }
+
+        // Send a success response with the list of admins
+        res.status(200).json({
+            message: 'Admins retrieved successfully',
+            admins,
+        });
+    } catch (error) {
+        // Log and handle any errors
+        console.error('Error retrieving admins:', error);
+        res.status(500).json({
+            message: 'Internal server error',
+        });
+    }
+};
+
+
+// ------------------ Login Admin API----------------
+
+// Adjust the path to your Admin model
+
+export const getAdmin = async (req, res) => {
+
+  try {
+    const { email, password } = req.body;
+  
+    const admin = await Admin.findOne({ email });
+
+    // Check if the user exists
+    if (!admin) {
+      return res.status(400).json({ msg: "Admin not found" });
+    }
+
+    // Compare the entered password with the hashed password
+    const isMatch = await bcrypt.compare(password, admin.password);
+
+    // If the passwords do not match, return an error
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid credentials" });
+    }
+
+    // Generate a JWT token if the credentials are correct
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET // Use your JWT secret key
+    );
+
+    // Return a success response with the token
+    return res.status(200).json({ msg: "Login successful",admin });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal Server Error" });
+  }
+};

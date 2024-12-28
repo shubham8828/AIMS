@@ -1,4 +1,49 @@
 
+/* Apply custom scroll bar to the whole page */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll; /* Ensures the scroll bar is always visible */
+}
+
+/* Styling the scroll bar */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scroll bar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f4f4; /* Background of the scroll bar track */
+  border-radius: 6px; /* Rounded corners for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scroll bar thumb */
+  border-radius: 6px; /* Rounded corners for the thumb */
+  border: 2px solid #f4f4f4; /* Optional: To give a spacing effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color when hovered */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin; /* Make the scroll bar thin */
+  scrollbar-color: #888 #f4f4f4; /* Thumb and track colors */
+}
+
+/* Customize the height of the horizontal scroll bar if needed */
+::-webkit-scrollbar-horizontal {
+  height: 10px; /* Height of horizontal scroll bar */
+}
+
+
+
+
+
+
+
+
 /* ------------------  Side Bar and Page Layout -------------------- */
 
 /* Sidebar styles */
@@ -626,7 +671,6 @@ button {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f4f4f9;
 }
 
 /* Spinner overlay to cover the entire screen */
@@ -636,7 +680,7 @@ button {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.249); /* Semi-transparent background */
   display: flex;
   justify-content: center;
   align-items: center;

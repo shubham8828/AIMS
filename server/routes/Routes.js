@@ -4,7 +4,7 @@ import {
         deleteInvoice, invoices, newInvoive, searchCustomer,updateInvoice, 
         getUser, login, register,update,makePayment,newMessages,
         getUserPayments,getInvoice,getPaymentData,getMessages,getUsers ,
-        deleteUser
+        deleteUser,getAdmins, addAdmin,getAdmin
 
     } from '../controller/Controller.js';
 
@@ -30,5 +30,10 @@ Routes.delete('/deleteuser/:userId',deleteUser)
 
 Routes.post('/messages',getMessages);
 Routes.post('/newmessage',newMessages);
+
+Routes.post('/addAdmin',addAdmin)
+Routes.get('/getAdmins',getAdmins)
+Routes.post('/getAdmin',getAdmin)
+
 export default Routes;
   
